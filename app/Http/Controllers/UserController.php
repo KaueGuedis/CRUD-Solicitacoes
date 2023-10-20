@@ -75,7 +75,7 @@ class UserController extends Controller
 
             User::create($dadosUsuario);
             Session(['mensagem_sucesso' => "Usuário cadastrado com sucesso"]);
-            return view("index");
+            return redirect()->intended('login');
 
         } catch (\Exception $e) {
 

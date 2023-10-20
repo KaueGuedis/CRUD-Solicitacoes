@@ -24,6 +24,17 @@
                         </div>
                     @endif
 
+                    @if (Session::has('mensagem_sucesso'))
+                        <div id="message" class="alert alert-success">
+                            {{ Session::get('mensagem_sucesso') }}
+                        </div>
+                    @endif
+                    @if (Session::has('mensagem_aviso'))
+                        <div id="message" class="alert alert-warning">
+                            {{ Session::get('mensagem_aviso') }}
+                        </div>
+                    @endif
+
                     @if($usuarioLogado->tipo_usuario == 'cliente')
                         <div>
                             <a class="btn fundo_amarelo pull-right" href="{{url('novoChamado')}}"><span class="branco">Criar Chamado</span></a>
@@ -87,6 +98,10 @@
                     };
                 },
             });
+            @php
+                Session(['mensagem_aviso' => NULL]);
+                Session(['mensagem_sucesso' => NULL]);
+            @endphp
         });
 
         function transDataBR(data) {

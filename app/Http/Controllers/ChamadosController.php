@@ -47,7 +47,7 @@ class ChamadosController extends Controller
                 $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
                 $extension = $request->file('anexo')->getClientOriginalExtension();
                 $dadosChamado['anexo'] = $filename.'_'.time().'.'.$extension;
-                $request->file('anexo')->storeAs('public/anexo', $dadosChamado['anexo']);
+                $request->file('anexo')->storeAs('public', $dadosChamado['anexo']);
             } else {
                 $dadosChamado['anexo'] = NULL;
             }
@@ -124,6 +124,11 @@ class ChamadosController extends Controller
     {
         try {
 
+            $usuarioLogado = Auth::user();
+            if(empty($usuarioLogado)){
+                return view('index');
+            }
+
             $chamado = Chamados::findOrFail($request->id);
             if(!empty($chamado)){
                 return view('chamado', ['dadosChamado' => $chamado]);
@@ -144,7 +149,11 @@ class ChamadosController extends Controller
 
     public function baixarArquivo(Request $request)
     {
-        return Storage::disk('public')->download('anexo/'.$request->anexo);
+        try {
+            return Storage::disk('public')->download($request->anexo);
+        } catch (\Exception $e) {
+            Session(['mensagem_aviso' => "Arquivo não encontrado"]);
+        }
     }
 
     public function atualizaChamado(Request $request)
@@ -152,6 +161,7 @@ class ChamadosController extends Controller
         try {
 
             $dadosChamado = $request->all();
+
             if($dadosChamado['atualiza_chamado'] == 'Finalizado' && empty($dadosChamado['resposta'])){
                 return back()->withErrors([
                     'resposta' => 'Preencha a resposta corretamente',
@@ -159,12 +169,14 @@ class ChamadosController extends Controller
             }
             
             $salvaChamado = Chamados::where('id', $dadosChamado['id'])->update(['status' => $dadosChamado['atualiza_chamado'], 'resposta' => $dadosChamado['resposta']]);
-            if(!empty($salvaChamado)){
+
+            if($salvaChamado){
+                Session(['mensagem_sucesso' => "Chamado atualizado com sucesso"]);
                 return redirect()->intended('dashboard');
             }
-            return back()->withErrors([
-                'descricao' => 'Erro ao salvar chamado',
-                ])->withInput($dadosChamado);
+
+            Session(['mensagem_aviso' => "Erro ao atualizar chamado"]);
+            return back()->withInput($dadosChamado);
 
         } catch (\Exception $e) {
 

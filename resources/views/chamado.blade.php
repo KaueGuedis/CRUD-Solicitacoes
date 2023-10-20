@@ -6,7 +6,12 @@
 
 @section('conteudo')
 <title>Criar chamado</title>
-
+{{-- @php
+    dd($dadosChamado('reposta')
+    empty($dadosChamado['resposta']) || $dadosChamado['resposta'] != 'Finalizado',
+    empty($dadosChamado['resposta']),
+    $dadosChamado['resposta'] != 'Finalizado');
+@endphp --}}
 <div class="container" style="margin-top: 2%">
     <div class="row">
         <div class="col-md-12 center-block">
@@ -27,8 +32,8 @@
                     @if(empty($dadosChamado))
                         <form id="form_id" class="form-horizontal" method="POST" action="{{ url('salvarChamado') }}" enctype="multipart/form-data">
                     @else
-                        <input type="text" hidden name="id" value="{{$dadosChamado['id']}}">
                         <form id="form_id" class="form-horizontal" method="POST" action="{{ url('atualizaChamado') }}" enctype="multipart/form-data">
+                        <input type="text" hidden name="id" value="{{$dadosChamado['id']}}">
                     @endif
                         
                         {{ csrf_field() }}
@@ -81,7 +86,7 @@
 
                             <div>
                                 <label for="resposta"><span class="amarelo">Resposta</span></label>
-                                <textarea {{empty($dadosChamado['resposta']) || $dadosChamado['resposta'] != 'Finalizado' ? '' : 'readonly'}} class="form-control" name="resposta" id="resposta" cols="30" rows="10" required>{{old('resposta') ?? $dadosChamado['resposta'] ?? ''}}</textarea>
+                                <textarea {{empty($dadosChamado['resposta']) || $dadosChamado['status'] != 'Finalizado' ? '' : 'readonly'}} class="form-control" name="resposta" id="resposta" cols="30" rows="10" required>{{old('resposta') ?? $dadosChamado['resposta'] ?? ''}}</textarea>
                                 @if ($errors->has('resposta'))
                                     <strong class="branco"> {{ $errors->first('resposta') }}</strong>
                                 @endif
@@ -92,16 +97,18 @@
                         <br><br>
 
                         @if(!empty($dadosChamado))
-                            <input hidden type="text" id="atualiza_chamado" name="atualiza_chamado">
-                            <div class="text-center">
-                                <button type="button" class="btn fundo_amarelo" onclick="enviaFormulario('Finalizado')">
-                                    <span class="branco">Finalizar Chamado</span>
-                                </button>
+                            @if($dadosChamado['status'] != 'Finalizado')
+                                <input hidden type="text" id="atualiza_chamado" name="atualiza_chamado">
+                                <div class="text-center">
+                                    <button type="button" class="btn fundo_amarelo" onclick="enviaFormulario('Finalizado')">
+                                        <span class="branco">Finalizar Chamado</span>
+                                    </button>
 
-                                <button type="button" class="btn fundo_amarelo" onclick="enviaFormulario('Em atendimento')">
-                                    <span class="branco">Atualizar Chamado</span>
-                                </button>
-                            </div>
+                                    <button type="button" class="btn fundo_amarelo" onclick="enviaFormulario('Em atendimento')">
+                                        <span class="branco">Atualizar Chamado</span>
+                                    </button>
+                                </div>
+                            @endif
                         @else
                             <div class="text-center">
                                 <button type="submit" class="btn fundo_amarelo">
@@ -143,6 +150,13 @@
         $('#atualiza_chamado').val(status);
         $('#form_id').submit();
     }
+
+    $(document).ready(function(){
+        @php
+            Session(['mensagem_aviso' => NULL]);
+            Session(['mensagem_sucesso' => NULL]);
+        @endphp
+    });
 
 </script>
 
