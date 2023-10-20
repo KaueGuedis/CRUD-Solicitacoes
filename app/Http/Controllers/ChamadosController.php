@@ -4,9 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Models\Chamados;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ChamadosController extends Controller
 {
+
+    public function criarChamado()
+    {
+        $usuarioLogado = Auth::user();
+        if(empty($usuarioLogado)){
+            return view('index');
+        } else if($usuarioLogado['tipo_usuario'] != 'cliente'){
+            return view("dashboard", ['usuarioLogado' => $usuarioLogado, 'erro' => 'Colaborador não pode criar chamado']);
+        }
+
+        return view('criar_chamado');
+
+    }
 
     public function salvarChamado(Request $request)
     {

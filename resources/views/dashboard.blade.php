@@ -14,9 +14,15 @@
 
                 <div class="panel-body">
 
-                    @if($usuarioLogado['tipo_usuario'] == 'cliente')
+                    @if(!empty($erro))
+                        <div id="message" class="alert alert-warning">
+                            {{ $erro }}
+                        </div>
+                    @endif
+
+                    @if($usuarioLogado->tipo_usuario == 'cliente')
                         <div>
-                            <button class="btn fundo_amarelo pull-right"><span class="branco">Criar Chamado</span></button>
+                            <a class="btn fundo_amarelo pull-right" href="{{url('criarChamado')}}"><span class="branco">Criar Chamado</span></a>
                         </div>
 
                         <br><br>
