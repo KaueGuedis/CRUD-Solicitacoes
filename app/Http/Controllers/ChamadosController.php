@@ -19,7 +19,7 @@ class ChamadosController extends Controller
             return view("dashboard", ['usuarioLogado' => $usuarioLogado, 'erro' => 'Colaborador não pode criar chamado']);
         }
 
-        return view('criar_chamado');
+        return view('chamado');
 
     }
 
