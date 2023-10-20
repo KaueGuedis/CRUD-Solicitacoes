@@ -14,11 +14,13 @@
 
                 <div class="panel-body">
 
-                    <div>
-                        <button class="btn fundo_amarelo pull-right"><span class="branco">Criar Chamado</span></button>
-                    </div>
+                    @if($usuarioLogado['tipo_usuario'] == 'cliente')
+                        <div>
+                            <button class="btn fundo_amarelo pull-right"><span class="branco">Criar Chamado</span></button>
+                        </div>
 
-                    <br><br>
+                        <br><br>
+                    @endif
 
                     <div>
                         <table id="tabela_chamados" class="fundo_branco" data-pagination="true" data-search="true" data-toolbar=".toolbar" data-show-refresh="true">
@@ -31,6 +33,18 @@
                                 </tr>
                             </thead>
                         </table>
+                    </div>
+
+                    <br><br>
+
+                    <div class="form-group center-block">
+
+                        <div class="row col-md-12">
+                            <a class="pull-right amarelo" href="{{url('logout')}}">
+                                Logout
+                            </a>
+                        </div>
+
                     </div>
                     
                 </div>
@@ -53,6 +67,11 @@
                 sidePagination:"server",
                 method: 'get',
                 cache:false,
+                onClickRow: function(row, $element, field){
+                    console.log(row);
+                    console.log($element);
+                    console.log(field);
+                },
                 queryParams: function (p) {
                     return {
                         params:p

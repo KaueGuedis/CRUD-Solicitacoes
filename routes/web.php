@@ -14,8 +14,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', 'App\Http\Controllers\LoginController@index');
-Route::get('index', 'App\Http\Controllers\LoginController@index')->name('index');
-Route::post('login', 'App\Http\Controllers\LoginController@authenticate')->name('login');
+Route::get('login', 'App\Http\Controllers\LoginController@index')->name('login');
+Route::get('logout', 'App\Http\Controllers\LoginController@logout')->name('logout');
+Route::post('authenticate', 'App\Http\Controllers\LoginController@authenticate')->name('authenticate');
 Route::get('dashboard', 'App\Http\Controllers\LoginController@dashboard')->name('dashboard');
 Route::get('novoUsuario', 'App\Http\Controllers\UserController@index')->name('novoUsuario');
 Route::post('cadastro/novoUsuario', 'App\Http\Controllers\UserController@novoUsuario')->name('cadastro/novoUsuario');

@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class LoginController extends Controller
 {
@@ -31,7 +31,9 @@ class LoginController extends Controller
             ]);
 
             if (Auth::attempt($credentials)) {
-                $request->session()->regenerate();     
+                $request->session()->regenerate();
+                $usuario = User::where('email', $credentials['email'])->first()->toArray();
+                $request->session()->push('usuario', $usuario);
                 return redirect()->intended('dashboard');
             }
 
@@ -47,7 +49,18 @@ class LoginController extends Controller
 
     public function dashboard()
     {
-        return view("dashboard");
+        $usuarioLogado = session()->pull('usuario');
+        if(empty($usuarioLogado)){
+            return view('index');
+        }
+
+        $usuarioLogado = $usuarioLogado[0];
+        return view("dashboard", ['usuarioLogado' => $usuarioLogado]);
     }
 
+    public function logout(Request $request)
+    {
+        $request->session()->remove('usuario');
+        return view('index');
+    }
 }

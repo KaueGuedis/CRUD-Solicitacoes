@@ -16,7 +16,7 @@
 
                     <div id="message"></div>
 
-                    <form id="form_id" class="form-horizontal" method="POST" action="{{ url('login') }}">
+                    <form id="form_id" class="form-horizontal" method="POST" action="{{ url('authenticate') }}">
                         
                         {{ csrf_field() }}
                         <div>
