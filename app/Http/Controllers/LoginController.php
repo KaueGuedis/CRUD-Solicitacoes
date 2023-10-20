@@ -58,7 +58,7 @@ class LoginController extends Controller
     {
         $usuarioLogado = Auth::user();
         if(empty($usuarioLogado)){
-            return view('index');
+            return redirect()->intended('login');
         }
 
         return view("dashboard", ['usuarioLogado' => $usuarioLogado]);
@@ -67,6 +67,6 @@ class LoginController extends Controller
     public function logout()
     {
         Auth::logout();
-        return view('index');
+        return redirect()->intended('login');
     }
 }

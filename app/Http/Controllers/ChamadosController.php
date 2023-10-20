@@ -15,7 +15,7 @@ class ChamadosController extends Controller
     {
         $usuarioLogado = Auth::user();
         if(empty($usuarioLogado)){
-            return view('index');
+            return redirect()->intended('login');
         } else if($usuarioLogado['tipo_usuario'] != 'cliente'){
             return view("dashboard", ['usuarioLogado' => $usuarioLogado, 'erro' => 'Colaborador não pode criar chamado']);
         }
@@ -56,7 +56,7 @@ class ChamadosController extends Controller
 
             $usuarioLogado = Auth::user();
             if(empty($usuarioLogado)){
-                return view('index');
+                return redirect()->intended('login');
             } else if($usuarioLogado['tipo_usuario'] != 'cliente'){
                 return view("dashboard", ['usuarioLogado' => $usuarioLogado, 'erro' => 'Colaborador não pode criar chamado']);
             } else {
@@ -126,7 +126,7 @@ class ChamadosController extends Controller
 
             $usuarioLogado = Auth::user();
             if(empty($usuarioLogado)){
-                return view('index');
+                return redirect()->intended('login');
             }
 
             $chamado = Chamados::findOrFail($request->id);
