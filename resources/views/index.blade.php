@@ -2,32 +2,6 @@
 
 @push('style')
 
-    <style>
-        .panel-transparent {
-            background: none;
-        }
-
-        .panel-transparent .panel-body{
-            background: #2D2D37;
-        }
-
-        .center-block {
-            float: none !important;
-        }
-
-        .branco {
-            color: #FAFAFA !important;
-        }
-
-        .amarelo {
-            color: #FFC500 !important;
-        }
-        
-        .fundo_amarelo {
-            background-color: #FFC500 !important;
-        }
-    </style>
-
 @endpush
 
 @section('conteudo')
@@ -39,16 +13,6 @@
             <div class="panel panel-default panel-transparent">
 
                 <div class="panel-body">
-                    {{-- @if (Session::has('mensagem_sucesso'))
-                        <div id="message" class="alert alert-success">
-                            {{ Session::get('mensagem_sucesso') }}
-                        </div>
-                    @endif
-                    @if (Session::has('mensagem_aviso'))
-                        <div id="message" class="alert alert-warning">
-                            {{ Session::get('mensagem_aviso') }}
-                        </div>
-                    @endif --}}
 
                     <div id="message"></div>
 
