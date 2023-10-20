@@ -21,4 +21,6 @@ Route::get('dashboard', 'App\Http\Controllers\LoginController@dashboard')->name(
 Route::get('novoUsuario', 'App\Http\Controllers\UserController@index')->name('novoUsuario');
 Route::post('cadastro/novoUsuario', 'App\Http\Controllers\UserController@novoUsuario')->name('cadastro/novoUsuario');
 Route::get('listagemChamados', 'App\Http\Controllers\ChamadosController@listagemChamados')->name('listagemChamados');
-Route::get('criarChamado', 'App\Http\Controllers\ChamadosController@criarChamado')->name('criarChamado');
+Route::get('novoChamado', 'App\Http\Controllers\ChamadosController@novoChamado')->name('novoChamado');
+Route::post('salvarChamado', 'App\Http\Controllers\ChamadosController@salvarChamado')->name('salvarChamado');
+Route::post('visualizarChamado', 'App\Http\Controllers\ChamadosController@visualizarChamado')->name('visualizarChamado');

@@ -21,6 +21,7 @@ class CreateChamados extends Migration
             $table->string('anexo')->nullable();
             $table->string('status')->default('Aberto');
             $table->dateTime('criacao');
+            $table->timestamps();
         });
     }
 

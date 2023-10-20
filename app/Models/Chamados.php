@@ -18,7 +18,8 @@ class Chamados extends Model
         'descricao',
         'resposta',
         'anexo',
-        'status'
+        'status',
+        'criacao'
     ];
 
     public static function listagem($limit, $offset, $search, $sort, $order)

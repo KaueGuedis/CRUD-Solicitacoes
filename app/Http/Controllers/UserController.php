@@ -77,10 +77,16 @@ class UserController extends Controller
             Session(['mensagem_sucesso' => "Usuário cadastrado com sucesso"]);
             return view("index");
 
-        } catch (\Exception $exception) {
-            Session(['mensagem_aviso' => $exception->getMessage()]);
-            return view("index");
-            // abort(500,$exception->getMessage() . " - " . $exception->getLine());
+        } catch (\Exception $e) {
+
+            return response()->json([
+
+                'status' => 'erro',
+                'msg' => $e->getMessage(),
+                'debug' => "Erro: " . $e->getMessage(), ", Linha: " => $e->getLine(), ", Arquivo: " => $e->getFile()
+
+            ], 500);
+
         }
     }
 }

@@ -100,7 +100,7 @@
                             </div>
 
                             <div class="row col-md-12">
-                                <a class="pull-right amarelo" href="{{url('index')}}">
+                                <a class="pull-right amarelo" href="{{url('login')}}">
                                     Voltar
                                 </a>
                             </div>
@@ -110,6 +110,7 @@
                     </form>
                     
                 </div>
+
             </div>
         </div>
     </div>

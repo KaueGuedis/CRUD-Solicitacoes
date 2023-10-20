@@ -40,8 +40,16 @@ class LoginController extends Controller
                 'email' => 'Informações inválidas ou usuário inexistente',
             ])->onlyInput('email');
 
-        } catch (\Exception $exception) {
-            abort(500,$exception->getMessage() . " - " . $exception->getLine());
+        } catch (\Exception $e) {
+
+            return response()->json([
+
+                'status' => 'erro',
+                'msg' => $e->getMessage(),
+                'debug' => "Erro: " . $e->getMessage(), ", Linha: " => $e->getLine(), ", Arquivo: " => $e->getFile()
+
+            ], 500);
+
         }
 
     }

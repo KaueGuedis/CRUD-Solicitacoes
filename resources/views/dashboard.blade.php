@@ -18,11 +18,15 @@
                         <div id="message" class="alert alert-warning">
                             {{ $erro }}
                         </div>
+                    @elseif(!empty($sucesso))
+                        <div id="message" class="alert alert-success">
+                            {{ $sucesso }}
+                        </div>
                     @endif
 
                     @if($usuarioLogado->tipo_usuario == 'cliente')
                         <div>
-                            <a class="btn fundo_amarelo pull-right" href="{{url('criarChamado')}}"><span class="branco">Criar Chamado</span></a>
+                            <a class="btn fundo_amarelo pull-right" href="{{url('novoChamado')}}"><span class="branco">Criar Chamado</span></a>
                         </div>
 
                         <br><br>
@@ -74,9 +78,18 @@
                 method: 'get',
                 cache:false,
                 onClickRow: function(row, $element, field){
-                    console.log(row);
-                    console.log($element);
-                    console.log(field);
+                    $.ajaxSetup({
+                            headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                    });
+                    $.ajax({
+                        url:"{{url('visualizarChamado')}}",
+                        type:'POST',
+                        data: {
+                            'id': row.id
+                        }
+                    })
                 },
                 queryParams: function (p) {
                     return {

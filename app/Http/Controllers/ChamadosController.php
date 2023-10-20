@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Chamados;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
 
 class ChamadosController extends Controller
 {
 
-    public function criarChamado()
+    public function novoChamado()
     {
         $usuarioLogado = Auth::user();
         if(empty($usuarioLogado)){
@@ -27,7 +28,45 @@ class ChamadosController extends Controller
         try {
 
             $dadosChamado = $request->all();
-            dd($dadosChamado, $request->all());
+
+            if(empty($dadosChamado['titulo'])){
+                return back()->withErrors([
+                    'titulo' => 'Preencha o Título do Chamado corretamente',
+                ])->withInput($dadosChamado);
+            }
+
+            if(empty($dadosChamado['descricao'])){
+                return back()->withErrors([
+                    'descricao' => 'Preencha o descrição do Chamado corretamente',
+                ])->withInput($dadosChamado);
+            }
+
+            if($request->hasFile('anexo')){
+                $filenameWithExt = $request->file('anexo')->getClientOriginalName();
+                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+                $extension = $request->file('anexo')->getClientOriginalExtension();
+                $dadosChamado['anexo'] = $filename.'_'.time().'.'.$extension;
+                $request->file('anexo')->storeAs('public/anexo', $dadosChamado['anexo']);
+            } else {
+                $dadosChamado['anexo'] = NULL;
+            }
+
+            $dadosChamado['criacao'] = date('Y-m-d H:i:s');
+
+            $usuarioLogado = Auth::user();
+            if(empty($usuarioLogado)){
+                return view('index');
+            } else if($usuarioLogado['tipo_usuario'] != 'cliente'){
+                return view("dashboard", ['usuarioLogado' => $usuarioLogado, 'erro' => 'Colaborador não pode criar chamado']);
+            } else {
+                $salvaChamado = Chamados::create($dadosChamado);
+                if(!empty($salvaChamado)){
+                    return redirect()->intended('dashboard');
+                }
+                return back()->withErrors([
+                    'descricao' => 'Erro ao salvar chamado',
+                ])->withInput($dadosChamado);
+            }
 
         } catch (\Exception $e) {
 
@@ -66,6 +105,25 @@ class ChamadosController extends Controller
             }
 
             return Chamados::listagem($limit, $offset, $search, $sort, $order);
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+
+                'status' => 'erro',
+                'msg' => $e->getMessage(),
+                'debug' => "Erro: " . $e->getMessage(), ", Linha: " => $e->getLine(), ", Arquivo: " => $e->getFile()
+
+            ], 500);
+
+        }
+    }
+
+    public function visualizarChamado(Request $request)
+    {
+        try {
+            
+            dd($request->all());
 
         } catch (\Exception $e) {
 
