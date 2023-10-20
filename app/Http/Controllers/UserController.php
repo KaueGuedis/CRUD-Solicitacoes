@@ -78,7 +78,9 @@ class UserController extends Controller
             return view("index");
 
         } catch (\Exception $exception) {
-            abort(500,$exception->getMessage() . " - " . $exception->getLine());
+            Session(['mensagem_aviso' => $exception->getMessage()]);
+            return view("index");
+            // abort(500,$exception->getMessage() . " - " . $exception->getLine());
         }
     }
 }
