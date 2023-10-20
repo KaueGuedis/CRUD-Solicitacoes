@@ -78,18 +78,8 @@
                 method: 'get',
                 cache:false,
                 onClickRow: function(row, $element, field){
-                    $.ajaxSetup({
-                            headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            }
-                    });
-                    $.ajax({
-                        url:"{{url('visualizarChamado')}}",
-                        type:'POST',
-                        data: {
-                            'id': row.id
-                        }
-                    })
+                    var url = "{{url('visualizarChamado')}}/"+row.id;
+                    window.location.replace(url);
                 },
                 queryParams: function (p) {
                     return {

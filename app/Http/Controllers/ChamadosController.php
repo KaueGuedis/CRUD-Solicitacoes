@@ -6,6 +6,7 @@ use App\Models\Chamados;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Storage;
 
 class ChamadosController extends Controller
 {
@@ -122,8 +123,48 @@ class ChamadosController extends Controller
     public function visualizarChamado(Request $request)
     {
         try {
+
+            $chamado = Chamados::findOrFail($request->id);
+            if(!empty($chamado)){
+                return view('chamado', ['dadosChamado' => $chamado]);
+            }
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+
+                'status' => 'erro',
+                'msg' => $e->getMessage(),
+                'debug' => "Erro: " . $e->getMessage(), ", Linha: " => $e->getLine(), ", Arquivo: " => $e->getFile()
+
+            ], 500);
+
+        }
+    }
+
+    public function baixarArquivo(Request $request)
+    {
+        return Storage::disk('public')->download('anexo/'.$request->anexo);
+    }
+
+    public function atualizaChamado(Request $request)
+    {
+        try {
+
+            $dadosChamado = $request->all();
+            if($dadosChamado['atualiza_chamado'] == 'Finalizado' && empty($dadosChamado['resposta'])){
+                return back()->withErrors([
+                    'resposta' => 'Preencha a resposta corretamente',
+                ])->withInput($dadosChamado);
+            }
             
-            dd($request->all());
+            $salvaChamado = Chamados::where('id', $dadosChamado['id'])->update(['status' => $dadosChamado['atualiza_chamado'], 'resposta' => $dadosChamado['resposta']]);
+            if(!empty($salvaChamado)){
+                return redirect()->intended('dashboard');
+            }
+            return back()->withErrors([
+                'descricao' => 'Erro ao salvar chamado',
+                ])->withInput($dadosChamado);
 
         } catch (\Exception $e) {
 

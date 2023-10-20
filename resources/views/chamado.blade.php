@@ -24,7 +24,12 @@
                         </div>
                     @endif
 
-                    <form id="form_id" class="form-horizontal" method="POST" action="{{ url('salvarChamado') }}" enctype="multipart/form-data">
+                    @if(empty($dadosChamado))
+                        <form id="form_id" class="form-horizontal" method="POST" action="{{ url('salvarChamado') }}" enctype="multipart/form-data">
+                    @else
+                        <input type="text" hidden name="id" value="{{$dadosChamado['id']}}">
+                        <form id="form_id" class="form-horizontal" method="POST" action="{{ url('atualizaChamado') }}" enctype="multipart/form-data">
+                    @endif
                         
                         {{ csrf_field() }}
 
@@ -34,7 +39,7 @@
 
                         <div>
                             <label for="titulo"><span class="amarelo">Título do chamado</span></label>
-                            <input {{!empty($dadosChamado) ?? 'readonly'}} id="titulo" type="text" class="form-control" name="titulo" value="{{old('titulo')}}" required autofocus placeholder="Insira o título do chamado">
+                            <input {{!empty($dadosChamado['titulo']) ? 'readonly' : ''}} id="titulo" type="text" class="form-control" name="titulo" value="{{old('titulo') ?? $dadosChamado['titulo'] ?? ''}}" required autofocus placeholder="Insira o título do chamado">
                             @if ($errors->has('titulo'))
                                 <strong class="branco"> {{ $errors->first('titulo') }}</strong>
                             @endif
@@ -44,7 +49,7 @@
 
                         <div>
                             <label for="descricao"><span class="amarelo">Descrição</span></label>
-                            <textarea {{!empty($dadosChamado) ?? 'readonly'}} class="form-control" name="descricao" id="descricao" cols="30" rows="10" required>{{old('descricao')}}</textarea>
+                            <textarea {{!empty($dadosChamado['descricao']) ? 'readonly' : ''}} class="form-control" name="descricao" id="descricao" cols="30" rows="10" required>{{old('descricao') ?? $dadosChamado['descricao'] ?? ''}}</textarea>
                             @if ($errors->has('descricao'))
                                 <strong class="branco"> {{ $errors->first('descricao') }}</strong>
                             @endif
@@ -53,9 +58,12 @@
                         <br>
 
                         <div>
-                            <label for="anexo"><span class="amarelo">Anexo</span></label>
-                            <input {{!empty($dadosChamado) ?? 'readonly'}} id="anexo" name="anexo" type="file" class="form-control" value="{{old('anexo')}}" minlength="14" autofocus>
-                            <input style="display: none" id="anexo_file" type="file" class="form-control" name="anexo_file" value="{{old('anexo')}}">
+                            @if(!empty($dadosChamado['anexo']))
+                                <a class="btn btn-primary" href="{{url('baixarArquivo?anexo='.$dadosChamado['anexo'])}}">Baixar Arquivo</a>
+                            @else
+                                <label for="anexo"><span class="amarelo">Anexo</span></label>
+                                <input {{!empty($dadosChamado) ? 'disabled' : ''}} id="anexo" name="anexo" type="file" class="form-control" value="{{old('anexo')}}" autofocus>
+                            @endif
                             @if ($errors->has('anexo'))
                                 <strong class="branco"> {{ $errors->first('anexo') }}</strong>
                             @endif
@@ -66,14 +74,14 @@
                         @if(!empty($dadosChamado))
                             <div>
                                 <label for="status"><span class="amarelo">Status</span></label>
-                                <input {{!empty($dadosChamado) ?? 'readonly'}} type="text" name="status" id="status" class="form-control" value="{{old('status')}}">
+                                <input readonly type="text" name="status" id="status" class="form-control" value="{{$dadosChamado['status']}}">
                             </div>
 
                             <br>
 
                             <div>
                                 <label for="resposta"><span class="amarelo">Resposta</span></label>
-                                <textarea {{!empty($dadosChamado) ?? 'readonly'}} class="form-control" name="resposta" id="resposta" cols="30" rows="10">{{old('resposta')}}</textarea>
+                                <textarea {{empty($dadosChamado['resposta']) || $dadosChamado['resposta'] != 'Finalizado' ? '' : 'readonly'}} class="form-control" name="resposta" id="resposta" cols="30" rows="10" required>{{old('resposta') ?? $dadosChamado['resposta'] ?? ''}}</textarea>
                                 @if ($errors->has('resposta'))
                                     <strong class="branco"> {{ $errors->first('resposta') }}</strong>
                                 @endif
@@ -84,15 +92,13 @@
                         <br><br>
 
                         @if(!empty($dadosChamado))
-                            <input hidden type="text" id="atualiza_chamado">
+                            <input hidden type="text" id="atualiza_chamado" name="atualiza_chamado">
                             <div class="text-center">
-                                <button type="submit" class="btn fundo_amarelo" onclick="$('#atualiza_chamdo').val('finaliza')">
+                                <button type="button" class="btn fundo_amarelo" onclick="enviaFormulario('Finalizado')">
                                     <span class="branco">Finalizar Chamado</span>
                                 </button>
-                            </div>
 
-                            <div class="text-center">
-                                <button type="submit" class="btn fundo_amarelo" onclick="$('#atualiza_chamdo').val('atualiza')">
+                                <button type="button" class="btn fundo_amarelo" onclick="enviaFormulario('Em atendimento')">
                                     <span class="branco">Atualizar Chamado</span>
                                 </button>
                             </div>
@@ -130,5 +136,14 @@
 @endsection
 
 @push('scripts')
+
+<script>
+
+    function enviaFormulario(status) {
+        $('#atualiza_chamado').val(status);
+        $('#form_id').submit();
+    }
+
+</script>
 
 @endpush

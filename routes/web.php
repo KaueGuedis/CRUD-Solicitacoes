@@ -23,4 +23,6 @@ Route::post('cadastro/novoUsuario', 'App\Http\Controllers\UserController@novoUsu
 Route::get('listagemChamados', 'App\Http\Controllers\ChamadosController@listagemChamados')->name('listagemChamados');
 Route::get('novoChamado', 'App\Http\Controllers\ChamadosController@novoChamado')->name('novoChamado');
 Route::post('salvarChamado', 'App\Http\Controllers\ChamadosController@salvarChamado')->name('salvarChamado');
-Route::post('visualizarChamado', 'App\Http\Controllers\ChamadosController@visualizarChamado')->name('visualizarChamado');
+Route::get('visualizarChamado/{id}', 'App\Http\Controllers\ChamadosController@visualizarChamado')->name('visualizarChamado');
+Route::post('atualizaChamado', 'App\Http\Controllers\ChamadosController@atualizaChamado')->name('atualizaChamado');
+Route::get('baixarArquivo', 'App\Http\Controllers\ChamadosController@baixarArquivo')->name('baixarArquivo');
