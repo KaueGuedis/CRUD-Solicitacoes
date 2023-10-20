@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'App\Http\Controllers\LoginController@index');
+Route::get('index', 'App\Http\Controllers\LoginController@index')->name('index');
+Route::post('login', 'App\Http\Controllers\LoginController@authenticate')->name('login');
+Route::get('dashboard', 'App\Http\Controllers\LoginController@dashboard')->name('dashboard');
+Route::get('novoUsuario', 'App\Http\Controllers\UserController@index')->name('novoUsuario');
+Route::post('cadastro/novoUsuario', 'App\Http\Controllers\UserController@novoUsuario')->name('cadastro/novoUsuario');
