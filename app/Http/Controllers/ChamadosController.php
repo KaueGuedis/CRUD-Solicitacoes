@@ -162,7 +162,7 @@ class ChamadosController extends Controller
 
             $dadosChamado = $request->all();
 
-            if($dadosChamado['atualiza_chamado'] == 'Finalizado' && empty($dadosChamado['resposta'])){
+            if(empty($dadosChamado['resposta'])){
                 return back()->withErrors([
                     'resposta' => 'Preencha a resposta corretamente',
                 ])->withInput($dadosChamado);
